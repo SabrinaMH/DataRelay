@@ -4,11 +4,11 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform>AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D11C1FDF-8A50-45CD-9B61-747F86532329}</ProjectGuid>
+    <ProjectGuid>{6A2FE190-5EFF-4529-939A-22742F7458E2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DataRelay</RootNamespace>
-    <AssemblyName>DataRelay</AssemblyName>
+    <RootNamespace>DataRelay.Grains.Interfaces</RootNamespace>
+    <AssemblyName>DataRelay.Grains.Interfaces</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -42,7 +42,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Grain1.cs" />
+    <Compile Include="INonGuaranteedGrain.cs" />
+    <Compile Include="IGuaranteedGrain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

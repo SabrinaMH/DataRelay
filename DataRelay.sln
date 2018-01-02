@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataRelay", "DataRelay\DataRelay.csproj", "{D11C1FDF-8A50-45CD-9B61-747F86532329}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataRelay.Grains", "DataRelay.Grains\DataRelay.Grains.csproj", "{D11C1FDF-8A50-45CD-9B61-747F86532329}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataRelay.SiloHost", "DataRelay.SiloHost\DataRelay.SiloHost.csproj", "{D81E1B1C-422F-4F94-914D-2E5E656D9AF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataRelay.Client", "DataRelay.Client\DataRelay.Client.csproj", "{7FB429BF-3672-486F-A0FB-1A158E127FF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataRelay.Grains.Interfaces", "DataRelay.Grains.Interfaces\DataRelay.Grains.Interfaces.csproj", "{6A2FE190-5EFF-4529-939A-22742F7458E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{D11C1FDF-8A50-45CD-9B61-747F86532329}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D11C1FDF-8A50-45CD-9B61-747F86532329}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D11C1FDF-8A50-45CD-9B61-747F86532329}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D81E1B1C-422F-4F94-914D-2E5E656D9AF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D81E1B1C-422F-4F94-914D-2E5E656D9AF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D81E1B1C-422F-4F94-914D-2E5E656D9AF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D81E1B1C-422F-4F94-914D-2E5E656D9AF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FB429BF-3672-486F-A0FB-1A158E127FF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FB429BF-3672-486F-A0FB-1A158E127FF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FB429BF-3672-486F-A0FB-1A158E127FF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FB429BF-3672-486F-A0FB-1A158E127FF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A2FE190-5EFF-4529-939A-22742F7458E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A2FE190-5EFF-4529-939A-22742F7458E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A2FE190-5EFF-4529-939A-22742F7458E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A2FE190-5EFF-4529-939A-22742F7458E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
