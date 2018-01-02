@@ -10,15 +10,15 @@ namespace DataRelay.Grains
 		private readonly HttpClient _httpClient;
 		private Uri _url;
 
+		public ForwarderGrain(HttpClient httpClient)
+		{
+			_httpClient = httpClient;
+		}
+
 		public override Task OnActivateAsync()
 		{
 			_url = new Uri(this.GetPrimaryKeyString());
 			return base.OnActivateAsync();
-		}
-
-		public ForwarderGrain(HttpClient httpClient)
-		{
-			_httpClient = httpClient;
 		}
 
 		public async Task Forward(string msg)

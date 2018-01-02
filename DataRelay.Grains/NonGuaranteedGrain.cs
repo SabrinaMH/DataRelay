@@ -1,25 +1,23 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using DataRelay.Grains.Interfaces;
 using Newtonsoft.Json;
 using Orleans;
+using Orleans.Providers;
 using Orleans.Runtime;
 
 namespace DataRelay.Grains
 {
-	public class NonGuaranteedGrain : Grain, INonGuaranteedGrain, IRemindable
+	[StorageProvider(ProviderName = "nonGuaranteedMessagesStore")]
+	public class NonGuaranteedGrain<NonGaranteedGrainState> : Grain<NonGuaranteedGrainState>, INonGuaranteedGrain, IRemindable, IPer
 	{
 		public async Task ReceiveData(string msg)
 		{
-			var reminder = await RegisterOrUpdateReminder("sendMessage", TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
-
-
-
-
+			var reminder = RegisterOrUpdateReminder("sendMessage", TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
+		
 			var message = JsonConvert.DeserializeObject<Message>(msg);
 
-			// SMH: See if anything can be done about this (eventually) long if else statement
-			if (message.PayloadType.Equals("opc", StringComparison.InvariantCultureIgnoreCase))
 			{
 			
 			}
@@ -29,10 +27,25 @@ namespace DataRelay.Grains
 		{
 			if (reminderName == "sendMessage")
 			{
-				// Send http request
-				var reminder = await GetReminder("sendMessage");
-				await UnregisterReminder(reminder);
+				// SMH: See if anything can be done about this (eventually) long if else statement
+				if (message.PayloadType.Equals("opc", StringComparison.InvariantCultureIgnoreCase))
+				{
+					var forwarderGrain = GrainFactory.GetGrain<IForwarderGrain>(new Uri("https://requestb.in/1l9pkus2").ToString());
+
+					var reminder = await GetReminder("sendMessage");
+					await UnregisterReminder(reminder);
+				}
 			}
+		}
+	}
+
+	public class NonGuaranteedGrainState
+	{
+		public List<string> Messages { get; }
+
+		public void AddMessage(string message)
+		{
+			Messages.Add(message);
 		}
 	}
 }

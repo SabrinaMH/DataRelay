@@ -11,7 +11,8 @@ namespace DataRelay.SiloHost
 		{
 			var siloConfig = ClusterConfiguration.LocalhostPrimarySilo();
 			siloConfig.UseStartupType<Startup>();
-			siloConfig.
+			siloConfig.Globals.ReminderServiceType = GlobalConfiguration.ReminderServiceProviderType.ReminderTableGrain;
+			siloConfig.Globals.RegisterStorageProvider("MemoryStorage", "nonGuaranteedMessagesStore")
 			var silo = new Orleans.Runtime.Host.SiloHost("DataRelaySilo", siloConfig);
 			silo.InitializeOrleansSilo();
 			silo.StartOrleansSilo();
