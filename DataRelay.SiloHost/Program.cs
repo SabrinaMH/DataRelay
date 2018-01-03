@@ -1,7 +1,9 @@
 using System;
 using System.Net.Http;
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Orleans.Runtime.Configuration;
+using Orleans.Storage;
 
 namespace DataRelay.SiloHost
 {
@@ -9,16 +11,17 @@ namespace DataRelay.SiloHost
 	{
 		static void Main(string[] args)
 		{
+
 			var siloConfig = ClusterConfiguration.LocalhostPrimarySilo();
 			siloConfig.UseStartupType<Startup>();
 			siloConfig.Globals.ReminderServiceType = GlobalConfiguration.ReminderServiceProviderType.ReminderTableGrain;
-			siloConfig.Globals.RegisterStorageProvider("MemoryStorage", "nonGuaranteedMessagesStore")
+			siloConfig.Globals.RegisterStorageProvider<MemoryStorage>("nonGuaranteedMessagesStore");
 			var silo = new Orleans.Runtime.Host.SiloHost("DataRelaySilo", siloConfig);
 			silo.InitializeOrleansSilo();
 			silo.StartOrleansSilo();
 
 			Console.WriteLine("Silo started.");
-			Console.ReadKey(); 
+			Console.ReadKey();
 
 			silo.ShutdownOrleansSilo();
 		}

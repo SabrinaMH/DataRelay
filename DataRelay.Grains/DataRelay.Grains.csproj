@@ -116,7 +116,7 @@
     <Compile Include="CmsGrain.cs" />
     <Compile Include="ForwarderGrain.cs" />
     <Compile Include="GuaranteedGrain.cs" />
-    <Compile Include="ICmsGrain.cs" />
+    <Compile Include="IGuaranteedDataTypeGrain.cs" />
     <Compile Include="IForwarderGrain.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="NonGuaranteedGrain.cs" />

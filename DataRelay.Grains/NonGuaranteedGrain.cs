@@ -10,42 +10,48 @@ using Orleans.Runtime;
 namespace DataRelay.Grains
 {
 	[StorageProvider(ProviderName = "nonGuaranteedMessagesStore")]
-	public class NonGuaranteedGrain<NonGaranteedGrainState> : Grain<NonGuaranteedGrainState>, INonGuaranteedGrain, IRemindable, IPer
+	public class NonGuaranteedGrain : Grain<NonGuaranteedGrainState>, INonGuaranteedGrain, IRemindable
 	{
 		public async Task ReceiveData(string msg)
 		{
-			var reminder = RegisterOrUpdateReminder("sendMessage", TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
-		
 			var message = JsonConvert.DeserializeObject<Message>(msg);
-
-			{
-			
-			}
+			State.AddMessage(message);
+			var reminder = RegisterOrUpdateReminder(message.Id.ToString(), TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
 		}
 
 		public async Task ReceiveReminder(string reminderName, TickStatus status)
 		{
-			if (reminderName == "sendMessage")
+			var message = State.GetMessage(Guid.Parse(reminderName));
+			
+			// SMH: See if anything can be done about this (eventually) long if else statement
+			if (message.PayloadType.Equals("opc", StringComparison.InvariantCultureIgnoreCase))
 			{
-				// SMH: See if anything can be done about this (eventually) long if else statement
-				if (message.PayloadType.Equals("opc", StringComparison.InvariantCultureIgnoreCase))
-				{
-					var forwarderGrain = GrainFactory.GetGrain<IForwarderGrain>(new Uri("https://requestb.in/1l9pkus2").ToString());
-
-					var reminder = await GetReminder("sendMessage");
-					await UnregisterReminder(reminder);
-				}
+				var forwarderGrain = GrainFactory.GetGrain<IForwarderGrain>(new Uri("https://requestb.in/1l9pkus2").ToString());
+				var response = await forwarderGrain.Forward(JsonConvert.SerializeObject(message));
+				
+				var reminder = await GetReminder(reminderName);
+				await UnregisterReminder(reminder);
 			}
 		}
 	}
 
 	public class NonGuaranteedGrainState
 	{
-		public List<string> Messages { get; }
+		private Dictionary<Guid, Message> _messages { get; }
 
-		public void AddMessage(string message)
+		public NonGuaranteedGrainState()
 		{
-			Messages.Add(message);
+			_messages = new Dictionary<Guid, Message>();
+		}
+
+		public void AddMessage(Message message)
+		{
+			_messages.Add(message.Id, message);
+		}
+
+		public Message GetMessage(Guid id)
+		{
+			return _messages[id];
 		}
 	}
 }

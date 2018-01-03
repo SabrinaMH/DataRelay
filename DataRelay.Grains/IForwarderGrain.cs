@@ -1,10 +1,11 @@
 ﻿using Orleans;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace DataRelay.Grains
 {
 	public interface IForwarderGrain : IGrainWithStringKey
 	{
-		Task Forward(string request);
+		Task<HttpStatusCode> Forward(string request);
 	}
 }

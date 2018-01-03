@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Net.Http;
+using System.Net;
 
 namespace DataRelay.Grains
 {
@@ -21,10 +22,11 @@ namespace DataRelay.Grains
 			return base.OnActivateAsync();
 		}
 
-		public async Task Forward(string msg)
+		public async Task<HttpStatusCode> Forward(string msg)
 		{
 			var request = new HttpRequestMessage(HttpMethod.Post, _url);
-			await _httpClient.SendAsync(request);
+			var response = await _httpClient.SendAsync(request);
+			return response.StatusCode;
 		}
 	}
 }

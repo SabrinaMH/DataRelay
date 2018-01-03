@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace DataRelay.Grains
 {
-	public class CmsGrain : Grain, ICmsGrain
+	public class CmsGrain : Grain, IGuaranteedDataTypeGrain
 	{
 		private List<Uri> _urls = new List<Uri> { new Uri("https://requestb.in/1l9pkus1") };
 

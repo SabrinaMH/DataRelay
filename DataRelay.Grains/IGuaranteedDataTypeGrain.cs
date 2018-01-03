@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DataRelay.Grains
 {
-	public interface ICmsGrain : IGrainWithStringKey
+	public interface IGuaranteedDataTypeGrain : IGrainWithStringKey
 	{
 		Task ReceiveData(string msg);
 	}
