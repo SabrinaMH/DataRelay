@@ -23,7 +23,6 @@ namespace DataRelay.Grains
 		{
 			var message = State.GetMessage(Guid.Parse(reminderName));
 			
-			// SMH: See if anything can be done about this (eventually) long if else statement
 			if (message.PayloadType.Equals("opc", StringComparison.InvariantCultureIgnoreCase))
 			{
 				var forwarderGrain = GrainFactory.GetGrain<IForwarderGrain>(new Uri("https://requestb.in/1l9pkus2").ToString());
