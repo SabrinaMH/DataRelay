@@ -41,6 +41,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Metrics, Version=0.5.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Metrics.NET.0.5.3\lib\net45\Metrics.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNetCore.Authorization, Version=1.1.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Authorization.1.1.2\lib\net451\Microsoft.AspNetCore.Authorization.dll</HintPath>
     </Reference>

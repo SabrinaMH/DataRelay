@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using Metrics;
 using Microsoft.Extensions.DependencyInjection;
 using Orleans.Runtime.Configuration;
 using Orleans.Storage;
@@ -11,6 +12,9 @@ namespace DataRelay.SiloHost
 	{
 		static void Main(string[] args)
 		{
+			Metric.Config
+				.WithHttpEndpoint("http://localhost:1234/server/")
+				.WithAllCounters();
 
 			var siloConfig = ClusterConfiguration.LocalhostPrimarySilo();
 			siloConfig.UseStartupType<Startup>();

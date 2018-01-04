@@ -1,8 +1,10 @@
 ﻿using DataRelay.Grains.Interfaces;
+using Metrics;
 using Newtonsoft.Json;
 using Orleans;
 using Orleans.Runtime.Configuration;
 using System;
+using System.Threading.Tasks;
 
 namespace DataRelay.Client
 {
@@ -10,6 +12,10 @@ namespace DataRelay.Client
 	{
 		static void Main(string[] args)
 		{
+			Metric.Config
+				.WithHttpEndpoint("http://localhost:1234/client/")
+				.WithAllCounters();
+
 			var clientConfig = ClientConfiguration.LocalhostSilo();
 
 			var client = new ClientBuilder().UseConfiguration(clientConfig).Build();
@@ -18,16 +24,26 @@ namespace DataRelay.Client
 			Console.WriteLine("Client connected.");
 
 			// SMH: Specifying a key seems to be unnatural here...
-			//var guaranteedGrain = client.GetGrain<IGuaranteedGrain>("guaranteed");
-			//var msg = new Message("cms");
+			Task.Run(async () =>
+			{
+				var guaranteedGrain = client.GetGrain<IGuaranteedGrain>("guaranteed");
+				var msg = new Message("cms");
+				var jsonMsg = JsonConvert.SerializeObject(msg);
+				while (true)
+				{
+					using (Metric.Timer("Guaranteed Request", Unit.Requests).NewContext())
+					{
+						await guaranteedGrain.ReceiveData(jsonMsg);
+						await Task.Delay(1);
+					}
+				}
+			}).Wait();
+
+			// SMH: Specifying a key seems to be unnatural here...
+			//var guaranteedGrain = client.GetGrain<INonGuaranteedGrain>("nonGuaranteed");
+			//var msg = new Message("opc");
 			//var jsonMsg = JsonConvert.SerializeObject(msg);
 			//guaranteedGrain.ReceiveData(jsonMsg);
-			
-			// SMH: Specifying a key seems to be unnatural here...
-			var guaranteedGrain = client.GetGrain<INonGuaranteedGrain>("nonGuaranteed");
-			var msg = new Message("opc");
-			var jsonMsg = JsonConvert.SerializeObject(msg);
-			guaranteedGrain.ReceiveData(jsonMsg);
 
 			Console.WriteLine("Press Enter to terminate...");
 			Console.ReadLine();
