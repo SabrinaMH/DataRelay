@@ -1,9 +1,9 @@
 using System;
 using System.Net.Http;
-using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Orleans.Runtime.Configuration;
 using Orleans.Storage;
+using OrleansDashboard;
 
 namespace DataRelay.SiloHost
 {
@@ -18,6 +18,7 @@ namespace DataRelay.SiloHost
 			siloConfig.Globals.RegisterStorageProvider<MemoryStorage>("nonGuaranteedMessagesStore");
 			var silo = new Orleans.Runtime.Host.SiloHost("DataRelaySilo", siloConfig);
 			silo.InitializeOrleansSilo();
+			silo.Config.Globals.RegisterDashboard();
 			silo.StartOrleansSilo();
 
 			Console.WriteLine("Silo started.");
