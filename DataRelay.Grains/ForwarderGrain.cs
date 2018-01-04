@@ -25,6 +25,7 @@ namespace DataRelay.Grains
 		public async Task<bool> Forward(string msg)
 		{
 			var request = new HttpRequestMessage(HttpMethod.Post, _url);
+			request.Content = new StringContent(msg);
 			using (Metric.Timer("Forward Request", Unit.Requests).NewContext())
 			{
 				var response = await _httpClient.SendAsync(request);

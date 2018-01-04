@@ -14,7 +14,7 @@ namespace DataRelay.Grains
 		// Need to have persistence of some sort (perhaps in memory) to circumvent this. But in memory means data can be lost!	
 		public async Task ReceiveData(string msg)
 		{
-			using (Metric.Timer("Guaranteed Request", Unit.Requests).NewContext()) 
+			using (Metric.Timer("Process Guaranteed Request", Unit.Requests).NewContext()) 
 			{
 				var message = JsonConvert.DeserializeObject<Message>(msg);
 
