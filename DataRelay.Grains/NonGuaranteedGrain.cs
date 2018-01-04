@@ -2,34 +2,50 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DataRelay.Grains.Interfaces;
+using Metrics;
 using Newtonsoft.Json;
 using Orleans;
+using Orleans.Concurrency;
 using Orleans.Providers;
 using Orleans.Runtime;
 
 namespace DataRelay.Grains
 {
+	[StatelessWorker]
 	[StorageProvider(ProviderName = "nonGuaranteedMessagesStore")]
 	public class NonGuaranteedGrain : Grain<NonGuaranteedGrainState>, INonGuaranteedGrain, IRemindable
 	{
 		public async Task ReceiveData(string msg)
 		{
-			var message = JsonConvert.DeserializeObject<Message>(msg);
-			State.AddMessage(message);
-			var reminder = RegisterOrUpdateReminder(message.Id.ToString(), TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
+			using (Metrics.Metric.Timer("Process Non-Guaranteed Request", Unit.Requests).NewContext())
+			{
+				var message = JsonConvert.DeserializeObject<Message>(msg);
+				State.AddMessage(message);
+				var reminder = await RegisterOrUpdateReminder(message.Id.ToString(), TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
+			}
 		}
 
 		public async Task ReceiveReminder(string reminderName, TickStatus status)
 		{
-			var message = State.GetMessage(Guid.Parse(reminderName));
-			
-			if (message.PayloadType.Equals("opc", StringComparison.InvariantCultureIgnoreCase))
+			using (Metrics.Metric.Timer("Process Reminder", Unit.Requests).NewContext())
 			{
-				var forwarderGrain = GrainFactory.GetGrain<IForwarderGrain>(new Uri("https://requestb.in/1l9pkus2").ToString());
-				var response = await forwarderGrain.Forward(JsonConvert.SerializeObject(message));
-				
-				var reminder = await GetReminder(reminderName);
-				await UnregisterReminder(reminder);
+				var message = State.GetMessage(Guid.Parse(reminderName));
+				if (message.PayloadType.Equals("opc", StringComparison.InvariantCultureIgnoreCase))
+				{
+					var forwarderGrain = GrainFactory.GetGrain<IForwarderGrain>(new Uri("https://requestb.in/1o2ycex1").ToString());
+					var success = await forwarderGrain.Forward(JsonConvert.SerializeObject(message));
+					if (success)
+					{
+						Metrics.Metric.Meter("Success", Unit.Errors).Mark();
+					}
+					else
+					{
+						Metrics.Metric.Meter("Error", Unit.Errors).Mark();
+					}
+
+					var reminder = await GetReminder(reminderName);
+					await UnregisterReminder(reminder);
+				}
 			}
 		}
 	}
